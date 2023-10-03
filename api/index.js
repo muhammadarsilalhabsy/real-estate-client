@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import userRoute from "./routes/user.route.js";
 dotenv.config();
 
 mongoose
@@ -14,10 +15,8 @@ const app = express();
 
 //  connect to mongo atlas
 
-app.get("/", (req, res) => {
-  res.send("Jalan update");
-});
-
 app.listen(3000, () => {
   console.log("Server running at http://localhost:3000");
 });
+
+app.use("/api/v1", userRoute);
