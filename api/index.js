@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 mongoose
-  .connect(process.env.MONGO)
+  .connect(process.env.MONGO_DEV)
   .then(console.log("Success connect to database"))
   .catch((err) => {
     console.log(err);
@@ -15,7 +15,7 @@ const app = express();
 //  connect to mongo atlas
 
 app.get("/", (req, res) => {
-  res.send("Jalan gaes");
+  res.send("Jalan update");
 });
 
 app.listen(3000, () => {
