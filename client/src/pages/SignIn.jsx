@@ -1,11 +1,19 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  signInStart,
+  signInFailure,
+  signInSuccess,
+} from "../features/user/userSlice";
 
 const SignIn = () => {
   const [formData, setFromData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  // get data from global (initialState)
+  const { isLoading, error } = useSelector((state) => state.user);
 
   const APIbaseURL = "http://localhost:3000";
   const handelChange = (e) => {
@@ -19,7 +27,7 @@ const SignIn = () => {
     e.preventDefault();
     try {
       // set loading is true
-      setLoading(true);
+      dispatch(signInStart());
 
       // post data
       const res = await fetch(APIbaseURL + "/api/v1/auth/sign-in", {
@@ -32,14 +40,13 @@ const SignIn = () => {
 
       // get the response
       const data = await res.json();
-      console.log(data);
+
       if (data.success !== false) {
-        setError(null);
+        dispatch(signInSuccess(data));
         navigate("/");
       } else {
-        setError(data.msg);
+        dispatch(signInFailure(data.msg));
       }
-      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -75,9 +82,9 @@ const SignIn = () => {
         />
         <button
           className="uppercase p-3 w-full bg-slate-700 hover:opacity-90 disabled:opacity-80 rounded-lg text-white font-medium"
-          disabled={loading}
+          disabled={isLoading}
         >
-          {loading ? "Loading..." : "Sing In"}
+          {isLoading ? "Loading..." : "Sing In"}
         </button>
       </form>
       <div className="mt-4 gap-2 flex text-sm">
