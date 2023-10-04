@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoute from "./routes/user.route.js";
 import authRoute from "./routes/auth.route.js";
-
+import cors from "cors";
 // activate dotenv
 dotenv.config();
 
@@ -16,6 +16,9 @@ mongoose
   });
 
 const app = express();
+
+// disable cors
+app.use(cors());
 
 // allow json as an input
 app.use(express.json());

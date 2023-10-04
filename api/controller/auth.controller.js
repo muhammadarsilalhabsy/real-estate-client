@@ -10,7 +10,9 @@ export const signUp = async (req, res, next) => {
     const user = new User({ username, email, password: hashPw });
     await user.save();
 
-    res.status(201).json({ msg: "Success create new user" });
+    res
+      .status(201)
+      .json({ statusCode: 201, success: true, msg: "Success create new user" });
   } catch (error) {
     next(errorHandler(550, "Error from function"));
   }
