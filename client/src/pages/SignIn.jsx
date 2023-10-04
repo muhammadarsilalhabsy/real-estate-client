@@ -13,7 +13,9 @@ const SignIn = () => {
   const dispatch = useDispatch();
 
   // get data from global (initialState)
-  const { isLoading, error } = useSelector((state) => state.user);
+  const { loading, error } = useSelector(
+    (state) => state.persistedReducer.user
+  );
 
   const APIbaseURL = "http://localhost:3000";
   const handelChange = (e) => {
@@ -82,9 +84,9 @@ const SignIn = () => {
         />
         <button
           className="uppercase p-3 w-full bg-slate-700 hover:opacity-90 disabled:opacity-80 rounded-lg text-white font-medium"
-          disabled={isLoading}
+          disabled={loading}
         >
-          {isLoading ? "Loading..." : "Sing In"}
+          {loading ? "Loading..." : "Sing In"}
         </button>
       </form>
       <div className="mt-4 gap-2 flex text-sm">

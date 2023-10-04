@@ -3,24 +3,23 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   currentUser: null,
   error: null,
-  isLoading: false,
+  loading: false,
 };
 
 const userSlice = createSlice({
   name: "user",
   initialState,
-
   reducers: {
     signInStart: (state) => {
-      state.isLoading = true;
+      state.loading = true;
     },
     signInSuccess: (state, action) => {
-      state.isLoading = false;
+      state.loading = false;
       state.currentUser = action.payload.data;
       state.error = null;
     },
     signInFailure: (state, action) => {
-      state.isLoading = false;
+      state.loading = false;
 
       state.error = action.payload;
     },
