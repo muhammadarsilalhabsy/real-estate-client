@@ -6,6 +6,9 @@ import {
   signInFailure,
   signInSuccess,
 } from "../features/user/userSlice";
+import OauthBtn from "../components/OauthBtn";
+import { APIbaseURL } from "../constant/index.js";
+import { toast } from "react-toastify";
 
 const SignIn = () => {
   const [formData, setFromData] = useState({});
@@ -17,7 +20,6 @@ const SignIn = () => {
     (state) => state.persistedReducer.user
   );
 
-  const APIbaseURL = "http://localhost:3000";
   const handelChange = (e) => {
     setFromData({
       ...formData,
@@ -42,9 +44,10 @@ const SignIn = () => {
 
       // get the response
       const data = await res.json();
-
+      console.log(data);
       if (data.success !== false) {
         dispatch(signInSuccess(data));
+        toast.success("Selamat datang " + data.data.username);
         navigate("/");
       } else {
         dispatch(signInFailure(data.msg));
@@ -88,6 +91,7 @@ const SignIn = () => {
         >
           {loading ? "Loading..." : "Sing In"}
         </button>
+        <OauthBtn />
       </form>
       <div className="mt-4 gap-2 flex text-sm">
         <p>{"Don't have an account?"}</p>
