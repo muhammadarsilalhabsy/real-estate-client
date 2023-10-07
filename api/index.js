@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import userRoute from "./routes/user.route.js";
 import authRoute from "./routes/auth.route.js";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 // activate dotenv
 dotenv.config();
 
@@ -19,6 +20,9 @@ const app = express();
 
 // disable cors
 app.use(cors());
+
+// cookie
+app.use(cookieParser());
 
 // allow json as an input
 app.use(express.json());
