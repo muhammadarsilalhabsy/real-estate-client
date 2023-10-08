@@ -21,11 +21,11 @@ const app = express();
 // disable cors
 app.use(cors());
 
-// cookie
-app.use(cookieParser());
-
 // allow json as an input
 app.use(express.json());
+
+// cookie
+app.use(cookieParser());
 
 app.listen(3000, () => {
   console.log("Server running at http://localhost:3000");

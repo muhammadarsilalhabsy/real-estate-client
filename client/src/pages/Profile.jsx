@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import { useRef, useState, useEffect } from "react";
+import { APIbaseURL } from "../constant/index.js";
 import {
   getDownloadURL,
   getStorage,
@@ -7,17 +8,16 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../utils/firebase";
-// import {
-//   updateUserStart,
-//   updateUserSuccess,
-//   updateUserFailure,
-//   deleteUserFailure,
-//   deleteUserStart,
-//   deleteUserSuccess,
-//   signOutUserStart,
-// } from "../redux/user/userSlice";
+
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import {
+  updateUserFailure,
+  updateUserStart,
+  updateUserSuccess,
+} from "../features/user/userSlice.js";
+import { toast } from "react-toastify";
+
 export default function Profile() {
   const fileRef = useRef(null);
   const { currentUser, loading, error } = useSelector(
@@ -72,29 +72,36 @@ export default function Profile() {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     dispatch(updateUserStart());
-  //     const res = await fetch(`/api/user/update/${currentUser._id}`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(formData),
-  //     });
-  //     const data = await res.json();
-  //     if (data.success === false) {
-  //       dispatch(updateUserFailure(data.message));
-  //       return;
-  //     }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(
+        `${APIbaseURL}/api/v1/users/update/${currentUser._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-  //     dispatch(updateUserSuccess(data));
-  //     setUpdateSuccess(true);
-  //   } catch (error) {
-  //     dispatch(updateUserFailure(error.message));
-  //   }
-  // };
+          body: JSON.stringify({ ...formData, token: currentUser.token }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.success !== false) {
+        dispatch(updateUserSuccess(data));
+        toast.success("Your profile is updated!");
+      } else {
+        dispatch(updateUserFailure(data.message));
+      }
+
+      // setUpdateSuccess(true);
+    } catch (error) {
+      dispatch(updateUserFailure(error.message));
+    }
+  };
 
   // const handleDeleteUser = async () => {
   //   try {
@@ -165,7 +172,7 @@ export default function Profile() {
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
-      <form className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           onChange={(e) => setFile(e.target.files[0])}
           type="file"
@@ -216,6 +223,7 @@ export default function Profile() {
           className="border p-3 rounded-lg"
         />
         <button
+          type="submit"
           disabled={loading}
           className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80"
         >
