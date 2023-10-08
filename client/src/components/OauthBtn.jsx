@@ -16,7 +16,6 @@ const OauthBtn = () => {
       const auth = getAuth(app);
 
       const result = await signInWithPopup(auth, provider);
-      console.log(result);
 
       const res = await fetch(APIbaseURL + "/api/v1/auth/google", {
         method: "POST",

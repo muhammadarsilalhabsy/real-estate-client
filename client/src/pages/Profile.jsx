@@ -12,6 +12,9 @@ import { app } from "../utils/firebase";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import {
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
   updateUserFailure,
   updateUserStart,
   updateUserSuccess,
@@ -92,9 +95,9 @@ export default function Profile() {
 
       if (data.success !== false) {
         dispatch(updateUserSuccess(data));
-        toast.success("Your profile is updated!");
+        toast.success(data.msg);
       } else {
-        dispatch(updateUserFailure(data.message));
+        dispatch(updateUserFailure(data.msg));
       }
 
       // setUpdateSuccess(true);
@@ -103,23 +106,34 @@ export default function Profile() {
     }
   };
 
-  // const handleDeleteUser = async () => {
-  //   try {
-  //     dispatch(deleteUserStart());
-  //     const res = await fetch(`/api/user/delete/${currentUser._id}`, {
-  //       method: "DELETE",
-  //     });
-  //     const data = await res.json();
-  //     if (data.success === false) {
-  //       dispatch(deleteUserFailure(data.message));
-  //       return;
-  //     }
-  //     dispatch(deleteUserSuccess(data));
-  //   } catch (error) {
-  //     dispatch(deleteUserFailure(error.message));
-  //   }
-  // };
+  const handleDeleteUser = async () => {
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(
+        `${APIbaseURL}/api/v1/users/delete/${currentUser._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
 
+          body: JSON.stringify({ token: currentUser.token }),
+        }
+      );
+      const data = await res.json();
+      console.log(data);
+      if (data.success !== false) {
+        dispatch(deleteUserSuccess());
+        toast.success(data.msg);
+      } else {
+        dispatch(deleteUserFailure(data.msg));
+      }
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  };
+
+  const handleSignOut = () => {};
   // const handleSignOut = async () => {
   //   try {
   //     dispatch(signOutUserStart());
@@ -236,7 +250,7 @@ export default function Profile() {
           Create Listing
         </Link> */}
       </form>
-      {/* <div className="flex justify-between mt-5">
+      <div className="flex justify-between mt-5">
         <span
           onClick={handleDeleteUser}
           className="text-red-700 cursor-pointer"
@@ -246,7 +260,7 @@ export default function Profile() {
         <span onClick={handleSignOut} className="text-red-700 cursor-pointer">
           Sign out
         </span>
-      </div> */}
+      </div>
       {/* 
       <p className="text-red-700 mt-5">{error ? error : ""}</p>
       <p className="text-green-700 mt-5">
