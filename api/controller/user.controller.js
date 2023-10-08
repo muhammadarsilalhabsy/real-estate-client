@@ -23,7 +23,6 @@ export const updateUser = async (req, res, next) => {
           email: req.body.email,
           password: req.body.password,
           photo: req.body.photo,
-          token: req.body.token,
         },
       },
       { new: true }
@@ -34,7 +33,7 @@ export const updateUser = async (req, res, next) => {
       success: true,
       statusCode: 200,
       msg: "Success update profile",
-      data,
+      data: { ...data, token: req.body.token },
     });
   } catch (error) {
     next(error);
