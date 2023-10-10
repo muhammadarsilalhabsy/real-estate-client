@@ -1,4 +1,5 @@
 import Listing from "../models/listing.model.js";
+import { errorHandler } from "../utils/error.js";
 
 export const createListing = async (req, res, next) => {
   try {
@@ -31,6 +32,36 @@ export const deleteListing = async (req, res, next) => {
         success: true,
         statusCode: 200,
         msg: `${getListing.name} listing has been deleted!`,
+      });
+    } catch (error) {
+      next(error);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateListing = async (req, res, next) => {
+  try {
+    const getListing = await Listing.findById(req.params.id);
+
+    if (!getListing) return next(errorHandler(404, "Listing not found!"));
+
+    if (req.user.id !== getListing.userRef)
+      return next(errorHandler(401, "You can only update your own listing!"));
+
+    try {
+      const updatedListing = await Listing.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true }
+      );
+
+      res.status(200).json({
+        success: true,
+        statusCode: 200,
+        msg: `You listing has been updated!`,
+        data: updatedListing,
       });
     } catch (error) {
       next(error);

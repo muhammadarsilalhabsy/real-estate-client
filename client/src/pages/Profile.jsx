@@ -315,7 +315,10 @@ export default function Profile() {
                       >
                         Delete
                       </button>
-                      <Link className="bg-yellow-500 py-2 px-4 rounded-lg text-sm font-semibold text-center">
+                      <Link
+                        to={`/update-listing/${data._id}`}
+                        className="bg-yellow-500 py-2 px-4 rounded-lg text-sm font-semibold text-center"
+                      >
                         Edit
                       </Link>
                     </div>
