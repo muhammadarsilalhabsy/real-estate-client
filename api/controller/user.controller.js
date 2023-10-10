@@ -1,3 +1,4 @@
+import Listing from "../models/listing.model.js";
 import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
 import bcryptjs from "bcryptjs";
@@ -51,6 +52,24 @@ export const deleteUser = async (req, res, next) => {
       success: true,
       statusCode: 200,
       msg: "Success deleted your account!",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserListing = async (req, res, next) => {
+  if (req.user.id !== req.params.id)
+    return next(errorHandler(401, "You can view your own listing"));
+
+  try {
+    const userListing = await Listing.find({ userRef: req.params.id });
+
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      msg: "Success get all listings",
+      data: userListing,
     });
   } catch (error) {
     next(error);
