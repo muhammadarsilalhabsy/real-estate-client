@@ -32,8 +32,8 @@ export default function Profile() {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   // const [updateSuccess, setUpdateSuccess] = useState(false);
-  // const [showListingsError, setShowListingsError] = useState(false);
-  // const [userListings, setUserListings] = useState([]);
+  const [showListingsError, setShowListingsError] = useState(false);
+  const [userListings, setUserListings] = useState([]);
   const dispatch = useDispatch();
 
   // firebase storage
@@ -139,21 +139,39 @@ export default function Profile() {
     toast.success("You've been sign out");
   };
 
-  // const handleShowListings = async () => {
-  //   try {
-  //     setShowListingsError(false);
-  //     const res = await fetch(`/api/user/listings/${currentUser._id}`);
-  //     const data = await res.json();
-  //     if (data.success === false) {
-  //       setShowListingsError(true);
-  //       return;
-  //     }
+  const handleShowListings = async () => {
+    try {
+      setShowListingsError(false);
 
-  //     setUserListings(data);
-  //   } catch (error) {
-  //     setShowListingsError(true);
-  //   }
-  // };
+      const res = await fetch(
+        `${APIbaseURL}/api/v1/users/listings/${currentUser._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify({ token: currentUser.token }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.success !== false) {
+        setUserListings(data.data);
+        if (data.data.length !== 0) {
+          toast.success(data.msg);
+        } else {
+          toast.info("You did'nt create any listing yet");
+        }
+      } else {
+        showListingsError(true);
+      }
+    } catch (error) {
+      setShowListingsError(true);
+      console.log(error);
+    }
+  };
 
   // const handleListingDelete = async (listingId) => {
   //   try {
@@ -251,57 +269,53 @@ export default function Profile() {
           Sign out
         </span>
       </div>
-      {/* 
-      <p className="text-red-700 mt-5">{error ? error : ""}</p>
-      <p className="text-green-700 mt-5">
-        {updateSuccess ? "User is updated successfully!" : ""}
-      </p>
-      <button onClick={handleShowListings} className="text-green-700 w-full">
-        Show Listings
-      </button>
-      <p className="text-red-700 mt-5">
-        {showListingsError ? "Error showing listings" : ""}
-      </p>
 
-      {userListings && userListings.length > 0 && (
-        <div className="flex flex-col gap-4">
-          <h1 className="text-center mt-7 text-2xl font-semibold">
-            Your Listings
-          </h1>
-          {userListings.map((listing) => (
-            <div
-              key={listing._id}
-              className="border rounded-lg p-3 flex justify-between items-center gap-4"
-            >
-              <Link to={`/listing/${listing._id}`}>
-                <img
-                  src={listing.imageUrls[0]}
-                  alt="listing cover"
-                  className="h-16 w-16 object-contain"
-                />
-              </Link>
-              <Link
-                className="text-slate-700 font-semibold  hover:underline truncate flex-1"
-                to={`/listing/${listing._id}`}
-              >
-                <p>{listing.name}</p>
-              </Link>
+      <div className="flex flex-col justify-center my-4">
+        <button onClick={handleShowListings} className="text-green-700 ">
+          Show My Listings
+        </button>
 
-              <div className="flex flex-col item-center">
-                <button
-                  onClick={() => handleListingDelete(listing._id)}
-                  className="text-red-700 uppercase"
-                >
-                  Delete
-                </button>
-                <Link to={`/update-listing/${listing._id}`}>
-                  <button className="text-green-700 uppercase">Edit</button>
-                </Link>
-              </div>
+        <div className="mt-8">
+          {showListingsError && (
+            <p className=" bg-red-500 text-center text-white p-3 text-xs">
+              Error Showing listing, please refresh the pages!
+            </p>
+          )}
+
+          {userListings.length !== 0 && (
+            <div className="max-h-[21rem] overflow-auto px-4">
+              {userListings.map((data) => {
+                return (
+                  <div
+                    className="flex justify-between items-center mb-3"
+                    key={data._id}
+                  >
+                    <Link to={`/listing/${data._id}`} className="w-1/2 h-40">
+                      <img
+                        src={data.imageURLs[0]}
+                        alt="prev-upload"
+                        className="w-full h-full object-cover rounded-lg"
+                        title={data.name}
+                      />
+                    </Link>
+                    <div className="flex flex-col md:flex-row gap-4">
+                      <button
+                        type="button"
+                        className="bg-red-500 py-2 px-4 rounded-lg text-sm font-semibold text-center"
+                      >
+                        Delete
+                      </button>
+                      <Link className="bg-yellow-500 py-2 px-4 rounded-lg text-sm font-semibold text-center">
+                        Edit
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          ))}
+          )}
         </div>
-      )} */}
+      </div>
     </div>
   );
 }

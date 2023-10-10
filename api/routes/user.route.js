@@ -12,6 +12,6 @@ const router = express.Router();
 router.get("/get", getUser);
 router.post("/update/:id", verifyToken, updateUser);
 router.delete("/delete/:id", verifyToken, deleteUser);
-router.get("/listings/:id", verifyToken, getUserListing);
+router.post("/listings/:id", verifyToken, getUserListing);
 
 export default router;

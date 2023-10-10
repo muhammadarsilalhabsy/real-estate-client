@@ -154,7 +154,7 @@ const CreateListing = () => {
       if (data.success !== false) {
         toast.success(data.msg);
         setLoading(false);
-        console.log(data);
+
         navigate(`/listing/${data.data._id}/detail`);
       } else {
         toast.error(data.msg);
