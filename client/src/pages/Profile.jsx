@@ -173,24 +173,33 @@ export default function Profile() {
     }
   };
 
-  // const handleListingDelete = async (listingId) => {
-  //   try {
-  //     const res = await fetch(`/api/listing/delete/${listingId}`, {
-  //       method: "DELETE",
-  //     });
-  //     const data = await res.json();
-  //     if (data.success === false) {
-  //       console.log(data.message);
-  //       return;
-  //     }
+  const handleListingDelete = async (listingId) => {
+    try {
+      const res = await fetch(
+        `${APIbaseURL}/api/v1/listing/delete/${listingId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-  //     setUserListings((prev) =>
-  //       prev.filter((listing) => listing._id !== listingId)
-  //     );
-  //   } catch (error) {
-  //     console.log(error.message);
-  //   }
-  // };
+          body: JSON.stringify({ token: currentUser.token }),
+        }
+      );
+      const data = await res.json();
+
+      if (data.success !== false) {
+        toast.success(data.msg);
+        setUserListings((prev) =>
+          prev.filter((listing) => listing._id !== listingId)
+        );
+      } else {
+        toast.error(data.msg);
+      }
+    } catch (error) {
+      console.log(error?.message);
+    }
+  };
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
@@ -300,6 +309,7 @@ export default function Profile() {
                     </Link>
                     <div className="flex flex-col md:flex-row gap-4">
                       <button
+                        onClick={() => handleListingDelete(data._id)}
                         type="button"
                         className="bg-red-500 py-2 px-4 rounded-lg text-sm font-semibold text-center"
                       >
