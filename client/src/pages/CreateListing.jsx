@@ -155,7 +155,7 @@ const CreateListing = () => {
         toast.success(data.msg);
         setLoading(false);
 
-        navigate(`/listing/${data.data._id}/detail`);
+        navigate(`/listing/${data.data._id}`);
       } else {
         toast.error(data.msg);
         setLoading(false);
