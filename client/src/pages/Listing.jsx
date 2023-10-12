@@ -15,12 +15,14 @@ import {
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import Contact from "../components/Contact";
 const Listing = () => {
   SwiperCore.use([Navigation]);
   const param = useParams();
   const [listing, setListing] = useState({});
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [contact, setContact] = useState(false);
 
   useEffect(() => {
     const getListing = async () => {
@@ -133,15 +135,15 @@ const Listing = () => {
                 {listing.furnished ? "Furnished" : "Unfurnished"}
               </li>
             </ul>
-            {/* {currentUser && listing.userRef !== currentUser._id && !contact && (
+            {currentUser && listing.userRef !== currentUser._id && !contact && (
               <button
                 onClick={() => setContact(true)}
-                className='bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 p-3'
+                className="bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 p-3"
               >
                 Contact landlord
               </button>
             )}
-            {contact && <Contact listing={listing} />} */}
+            {contact && <Contact listing={listing} />}
           </div>
         </>
       )}

@@ -3,10 +3,6 @@ import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
 import bcryptjs from "bcryptjs";
 
-export const getUser = (req, res) => {
-  res.json({ msg: "Here we gooo" });
-};
-
 export const updateUser = async (req, res, next) => {
   if (req.user.id !== req.params.id)
     return next(errorHandler(401, "You can only update your own profile"));
@@ -70,6 +66,25 @@ export const getUserListing = async (req, res, next) => {
       statusCode: 200,
       msg: "Success get all listings",
       data: userListing,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) return next(errorHandler(404, "User not found!"));
+
+    const { password: pass, ...rest } = user._doc;
+
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      msg: "Success get user",
+      data: rest,
     });
   } catch (error) {
     next(error);
